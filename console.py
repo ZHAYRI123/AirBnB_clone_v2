@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ Console Module """
 import cmd
+import datetime
 import sys
 from models.base_model import BaseModel
 from models.__init__ import storage
@@ -114,17 +115,35 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
+        """Create an object of any class with given parameters."""
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+
+        arg_list = args.split(" ")
+        class_name = arg_list[0]
+
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+
+        new_instance = HBNBCommand.classes[class_name]()
+
+        for arg in arg_list[1:]:
+            key, value = tuple(arg.split("="))
+
+            if value[0] == '"':
+                # Handle escaped double quotes and underscores
+                value = value.strip('"').replace('\\"', '"').replace("_", " ")
+            elif value.isdigit():
+                setattr(new_instance, key, int(value))
+            elif value.replace('.', '', 1).isdigit():
+                setattr(new_instance, key, float(value))
+
         print(new_instance.id)
         storage.save()
+
+
 
     def help_create(self):
         """ Help information for the create method """
