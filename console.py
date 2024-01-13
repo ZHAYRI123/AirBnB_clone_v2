@@ -119,9 +119,9 @@ class HBNBCommand(cmd.Cmd):
             raise SyntaxError()
         My_List = arg.split(" ")
 
-        kwarg = {}
+        kwargs = {}
         for i in range(1, len(My_List)):
-            k, v = tuple(my_list[i].split("="))
+            k, v = tuple(My_List[i].split("="))
             if v[0] == '"':
                 v = v.strip('"').replace("_", " ")
             else:
@@ -129,9 +129,9 @@ class HBNBCommand(cmd.Cmd):
                     v = eval(v)
                 except (SyntaxError, NameError):
                     continue
-            kwarg[k] = v
+            kwargs[k] = v
 
-        if kwarg == {}:
+        if kwargs == {}:
             obj = eval(My_List[0])()
         else:
             obj = eval(My_List[0])(**kwargs)
