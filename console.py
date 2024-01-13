@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ Console Module """
 import cmd
+import datetime
 import sys
 from models.base_model import BaseModel
 from models.__init__ import storage
@@ -10,7 +11,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-from shlex import split
+
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -114,25 +115,37 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
+        """Create an object of any class with given parameters."""
         if not args:
             print("** class name missing **")
             return
-        My_List = args.split(" ")
-        if My_List[0] not in HBNBCommand.classes:
+
+        arg_list = args.split(" ")
+        class_name = arg_list[0]
+
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[My_List[0]]()
-        for i in range(1, len(My_List)):
-            k, v = tuple(My_List[i].split("="))
-            if v[0] == '"':
-                v = v.strip('"').replace("_", " ")
-            elif v.isdigit():
-                setattr(new_instance, k, int(v))
-            elif v.replace('.', '', 1).isdigit():
-                setattr(new_instance, k, float(v))
+
+        new_instance = HBNBCommand.classes[class_name]()
+
+        for arg in arg_list[1:]:
+            key, value = tuple(arg.split("="))
+
+            if value[0] == '"':
+                # Handle escaped double quotes and underscores
+                value = value.strip('"').replace('\\"', '"').replace("_", " ")
+            elif value.isdigit():
+                setattr(new_instance, key, int(value))
+            elif value.replace('.', '', 1).isdigit():
+                setattr(new_instance, key, float(value))
+
         print(new_instance.id)
         storage.save()
+
+
+
+
 
     def help_create(self):
         """ Help information for the create method """
