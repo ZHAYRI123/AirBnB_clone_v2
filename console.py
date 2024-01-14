@@ -14,7 +14,6 @@ from models.review import Review
 import re  # Import the regular expression module
 
 
-
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -116,7 +115,6 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-
     def do_create(self, args):
         """Create an object of any class with given parameters."""
         if not args:
@@ -137,7 +135,12 @@ class HBNBCommand(cmd.Cmd):
 
             # Check for string, float, and integer using regular expressions
             if re.match(r'^\".*\"$', value):
-                value = value[1:-1].replace('\\"', '"').replace("_", " ").replace('_', ' ')
+                value = (
+                        value[1:-1].replace('\\"', '"')
+                        .replace("_", " ")
+                        .replace('_', ' ')
+                        )
+
             elif re.match(r'^\d+\.\d+$', value):
                 value = float(value)
             elif re.match(r'^\d+$', value):
