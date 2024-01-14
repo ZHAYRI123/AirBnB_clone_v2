@@ -135,12 +135,7 @@ class HBNBCommand(cmd.Cmd):
 
             # Check for string, float, and integer using regular expressions
             if re.match(r'^\".*\"$', value):
-                value = (
-                        value[1:-1].replace('\\"', '"')
-                        .replace("_", " ")
-                        .replace('_', ' ')
-                        )
-
+                value = value[1:-1].replace('\\"', '"').replace("_", " ").replace('_', ' ')
             elif re.match(r'^\d+\.\d+$', value):
                 value = float(value)
             elif re.match(r'^\d+$', value):
