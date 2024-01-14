@@ -11,6 +11,8 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+import re  # Import the regular expression module
+
 
 
 class HBNBCommand(cmd.Cmd):
@@ -114,6 +116,7 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
+
     def do_create(self, args):
         """Create an object of any class with given parameters."""
         if not args:
@@ -132,20 +135,21 @@ class HBNBCommand(cmd.Cmd):
         for arg in arg_list[1:]:
             key, value = tuple(arg.split("="))
 
-            if value[0] == '"':
-                # Handle escaped double quotes and underscores
-                value = value.strip('"').replace('\\"', '"').replace("_", " ")
-            elif value.isdigit():
-                setattr(new_instance, key, int(value))
-            elif value.replace('.', '', 1).isdigit():
-                setattr(new_instance, key, float(value))
+            # Check for string, float, and integer using regular expressions
+            if re.match(r'^\".*\"$', value):
+                value = value[1:-1].replace('\\"', '"').replace("_", " ").replace('_', ' ')
+            elif re.match(r'^\d+\.\d+$', value):
+                value = float(value)
+            elif re.match(r'^\d+$', value):
+                value = int(value)
+            else:
+                # Skip unrecognized values
+                continue
+
+            setattr(new_instance, key, value)
 
         print(new_instance.id)
         storage.save()
-
-
-
-
 
     def help_create(self):
         """ Help information for the create method """
