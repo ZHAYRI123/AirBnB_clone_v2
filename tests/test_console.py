@@ -3,6 +3,7 @@ from unittest.mock import patch, Mock
 from io import StringIO
 from console import HBNBCommand
 from models.base_model import BaseModel
+import sys
 
 class TestConsole(unittest.TestCase):
 
@@ -18,7 +19,7 @@ class TestConsole(unittest.TestCase):
 
     def test_do_create_command(self):
         with patch('models.storage') as mock_storage:
-            HBNBCommand().onecmdloop()
+            HBNBCommand().onecmd('create BaseModel')
             mock_storage.save.assert_called_once()
             created_instance = mock_storage.new.call_args[0][0]
             self.assertIsInstance(created_instance, BaseModel)
@@ -26,14 +27,13 @@ class TestConsole(unittest.TestCase):
 
     def test_do_create_command_with_attributes(self):
         with patch('models.storage') as mock_storage:
-            HBNBCommand().onecmdloop()
+            HBNBCommand().onecmd('create BaseModel name="Test" number=12')
             mock_storage.save.assert_called_once()
             created_instance = mock_storage.new.call_args[0][0]
             self.assertIsInstance(created_instance, BaseModel)
             self.assertEqual(created_instance.name, "Test")
-            self.assertEqual(created_instance.number, 42)
-
-
+            self.assertEqual(created_instance.number, 12)
 
 if __name__ == '__main__':
     unittest.main()
+
