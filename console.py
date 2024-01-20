@@ -11,7 +11,6 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-import re  # Import the regular expression module
 
 
 class HBNBCommand(cmd.Cmd):
@@ -226,7 +225,7 @@ class HBNBCommand(cmd.Cmd):
         print_list = []
 
         if args:
-            args = args.split(' ')[0]  # remove possible trailing args
+            args = args.split(' ')[0]
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
@@ -285,7 +284,6 @@ class HBNBCommand(cmd.Cmd):
             print("** attribute name missing **")
             return
 
-        # Extract parameters as a dictionary
         params_str = " ".join(args_list[2:])
         try:
             params_dict = dict(item.split('=') for item in params_str.split())
@@ -293,20 +291,16 @@ class HBNBCommand(cmd.Cmd):
             print("** invalid parameter format **")
             return
 
-        # Retrieve the object
         obj = storage.all()[key]
 
-        # Update the object attributes
         for param, value in params_dict.items():
             if param in HBNBCommand.types:
-                # Type cast as necessary
                 try:
                     value = HBNBCommand.types[param](value)
                 except (ValueError, TypeError):
                     print("** invalid value for attribute {} **".format(param))
                     return
 
-            # Update object attribute
             setattr(obj, param, value)
 
         obj.save()
