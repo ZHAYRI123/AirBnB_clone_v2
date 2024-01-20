@@ -258,83 +258,58 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, args):
         """ Updates a certain object with new info """
-        c_name = c_id = att_name = att_val = kwargs = ''
+        args_list = args.split(" ")
 
-        args = args.partition(" ")
-        if args[0]:
-            c_name = args[0]
-        else:  # class name not present
+        if not args_list:
             print("** class name missing **")
             return
-        if c_name not in HBNBCommand.classes:
+
+        class_name = args_list[0]
+
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        args = args[2].partition(" ")
-        if args[0]:
-            c_id = args[0]
-        else:
+        if len(args_list) < 2:
             print("** instance id missing **")
             return
 
-        # generate key from class and id
-        key = c_name + "." + c_id
+        obj_id = args_list[1]
+        key = "{}.{}".format(class_name, obj_id)
 
         if key not in storage.all():
             print("** no instance found **")
             return
 
-        # first determine if kwargs or args
-        if '{' in args[2] and '}' in args[2] and type(eval(args[2])) is dict:
-            try:
-                kwargs = eval(args[2])
-            except Exception as e:
-                print(f"Error evaluating dictionary syntax: {e}")
-                return
-            args = []  # reformat kwargs into list, ex: [<name>, <value>, ...]
-            for k, v in kwargs.items():
-                args.append(k)
-                args.append(v)
-        else:
-            args = args[2]
-            if args and args[0] == '\"':
-                second_quote = args.find('\"', 1)
-                att_name = args[1:second_quote]
-                args = args[second_quote + 1:]
+        if len(args_list) < 3:
+            print("** attribute name missing **")
+            return
 
-            args = args.partition(' ')
+        # Extract parameters as a dictionary
+        params_str = " ".join(args_list[2:])
+        try:
+            params_dict = dict(item.split('=') for item in params_str.split())
+        except ValueError:
+            print("** invalid parameter format **")
+            return
 
-            if not att_name and args[0] != ' ':
-                att_name = args[0]
-            if args[2] and args[2][0] == '\"':
-                att_val = args[2][1:args[2].find('\"', 1)]
+        # Retrieve the object
+        obj = storage.all()[key]
 
-            if not att_val and args[2]:
-                att_val = args[2].partition(' ')[0]
-
-            args = [att_name, att_val]
-
-        new_dict = storage.all()[key]
-
-        for i, att_name in enumerate(args):
-            if (i % 2 == 0):
-                att_val = args[i + 1]
-                if not att_name:
-                    print("** attribute name missing **")
+        # Update the object attributes
+        for param, value in params_dict.items():
+            if param in HBNBCommand.types:
+                # Type cast as necessary
+                try:
+                    value = HBNBCommand.types[param](value)
+                except (ValueError, TypeError):
+                    print("** invalid value for attribute {} **".format(param))
                     return
-                if not att_val:
-                    print("** value missing **")
-                    return
-                if att_name in HBNBCommand.types:
-                    try:
-                        att_val = HBNBCommand.types[att_name](att_val)
-                    except ValueError as e:
-                        print(f"Error casting value to {att_name} type: {e}")
-                        return
 
-                new_dict.__dict__.update({att_name: att_val})
+            # Update object attribute
+            setattr(obj, param, value)
 
-        new_dict.save()
+        obj.save()
 
     def help_update(self):
         """ Help information for the update class """
