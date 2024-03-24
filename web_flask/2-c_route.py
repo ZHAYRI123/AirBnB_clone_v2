@@ -23,3 +23,6 @@ def display_c(text):
     """Display 'C' followed by the text variable."""
     t = text.replace("_", " ")
     return "C {}".format(t)
+
+if __name__ == "__main__":
+	app.run(host='0.0.0.0', port=5000)
