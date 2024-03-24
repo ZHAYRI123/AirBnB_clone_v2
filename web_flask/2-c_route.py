@@ -1,25 +1,25 @@
 #!/usr/bin/python3
-"""script that starts a Flask web application"""
+"""Simple Flask web application"""
 
 from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/', strict_slashes=False)
-def hello_root():
-	"""Hello HBNB!"""
-	return "Hello HBNB!"
 
-@app.route('/hbnb', strict_slashes=False)
+@app.route("/", strict_slashes=False)
 def hello_hbnb():
-	"""HBNB"""
-	return "HBNB"
+    """Display the text 'Hello HBNB!'"""
+    return "Hello HBNB!"
 
-@app.route('/c/<text>', strict_slashes=False)
-def hello_text(text):
-	""" C  followed by the value of the text"""
-	t = text.remplace("_", " ")
-	return "C {}".format(t)
 
-if __name__ == "__main__":
-	app.run(host='0.0.0.0', port=5000)
+@app.route("/hbnb", strict_slashes=False)
+def say_hbnb():
+    """Display the text 'HBNB'"""
+    return "HBNB"
+
+
+@app.route("/c/<text>", strict_slashes=False)
+def display_c(text):
+    """Display 'C' followed by the text variable."""
+    t = text.replace("_", " ")
+    return "C {}".format(t)
