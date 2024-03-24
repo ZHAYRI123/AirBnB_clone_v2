@@ -28,7 +28,7 @@ def display_c(text):
 @app.route('/python/<text>', strict_slashes=False)
 def python_text(text):
     """Route that displays 'Python ' followed by the value of the text variable."""
-    return 'Python {}'.format(escape(text.replace('_', ' ')))
-
+    t = text.replace("_", " ")
+    return "Python {}".format(t)
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
