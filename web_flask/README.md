@@ -1,0 +1,2 @@
+<h1>Flask framwork</h1>
+<p>Flask is a lightweight and flexible web framework for Python. It's designed to make it easy to build web applications quickly and with minimal boilerplate code. Flask provides features for routing URLs to Python functions, handling HTTP requests and responses, and templating HTML pages. It's popular for building APIs, web services, and small to medium-sized web applications. With Flask, developers can create web applications efficiently while maintaining control over the structure and components of their projects.</p>
